@@ -2,26 +2,15 @@
 {% block title %}Contact{% endblock title %}
 
 {% block content %}
-  <div class="container">
+  <div class="container container-contact " >
     <section class="form-wrap">
       <h1>Contact Me</h1>
       <p>Have a question or want to work together? Send a message below.</p>
 
-      <form id="contactForm" novalidate>
-        <div class="form-row">
-          <label for="name">Name</label>
-          <input id="name" name="name" type="text" placeholder="Your name" required />
-        </div>
+      <form id="contactForm" method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
 
-        <div class="form-row">
-          <label for="email">Email</label>
-          <input id="email" name="email" type="email" placeholder="you@example.com" required />
-        </div>
-
-        <div class="form-row">
-          <label for="message">Message</label>
-          <textarea id="message" name="message" rows="6" placeholder="Write your message..." required></textarea>
-        </div>
 
         <button class="btn" type="submit">Send Message</button>
         <p id="formStatus" class="status" role="status" aria-live="polite"></p>

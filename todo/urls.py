@@ -1,16 +1,17 @@
-
 from django.urls import path
 from .views import *
+
+
 urlpatterns = [
-  path('',home,name="home"),
-  path('login/',login_view,name="login"),
-  path('register/',register_view,name="register"),
-  path('logout/',logout_view,name="logout"),
-  path('contact/',contact_view,name="contact"),
-  path('about/',about_view,name="about"),
+    path('login/',CustomLoginView.as_view(),name='login'),
+    path('register/',CustomRegisterView.as_view(),name='register'),
+    path('logout/', logout_view,name='logout'),
+    path('',HomeView.as_view(),name='home'),
+    path('about/',AboutTemplateView.as_view(),name='about'),
+    path('contact',ContactCreateView.as_view(),name='contact'),
+    path('task/<int:pk>',TaskDetailView.as_view(),name='task'),
+    path('create/',TaskCreateView.as_view(),name='create'),
+    path('update/<int:pk>',TaskUpdateView.as_view(),name='update'),
+    path('delete/<int:pk>',TaskDeleteView.as_view(),name='delete'),
 
-
-  path('task_create', task_create, name='task_create'),
-  path('task_delete/<int:id>', task_delete, name='task_delete'),
-  path('task_update/<int:id>', task_update, name='task_update'),
 ]

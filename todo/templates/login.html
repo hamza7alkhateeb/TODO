@@ -5,23 +5,12 @@
   <section class="form-wrap">
     <h1>Login</h1>
 
-    <form id="loginForm" novalidate method="POST">
+    <form id="loginForm"  method="POST">
       {% csrf_token %}
-      <div class="form-row">
-        <label for="username">Username</label>
-        <input id="username" name="username" type="text" placeholder="Your Username"  />
-      </div>
-
-      <div class="form-row">
-        <label for="password">Password</label>
-        <input id="password" name="password" type="password"  />
-      </div>
-
-      <button class="btn" type="submit">Login</button>
-      {% for message in messages %}
-      <p id="formStatus" class="status" role="status" aria-live="polite">{{message}}</p>
-      {% endfor %}
+      {{ form.as_p }}
+      <input class="btn" type="submit" value="Login">
     </form>
+    <p>Don't have an account? <a href="{% url 'register' %}">Register</a></p>
   </section>
 </div>
 

@@ -5,22 +5,12 @@
   <section class="form-wrap">
     <h1>Register</h1>
     
-    <form id="contactForm" novalidate>
-      <div class="form-row">
-        <label for="username">Username</label>
-        <input id="username" name="username" type="text" placeholder="Your Username" required />
-      </div>
-      <div class="form-row">
-        <label for="email">Email</label>
-        <input id="email" name="email" type="email" placeholder="you@example.com" required />
-      </div>
-      <div class="form-row">
-        <label for="password">Password</label>
-        <input id="password" name="password" type="password" required />
-      </div>
-
+    <form id="contactForm"  method="POST">
+      {% csrf_token%}
+      {{form.as_p}}
       <button class="btn" type="submit">Register</button>
       <p id="formStatus" class="status" role="status" aria-live="polite"></p>
+      <p>Already have an account? <a href="{% url 'login' %}">Login</a></p>
     </form>
   </section>
 </div>

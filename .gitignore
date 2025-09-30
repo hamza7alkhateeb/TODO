@@ -3,7 +3,7 @@ env/
 
 
 db.sqlite3
-
+logfile.log
 
 __pycache__/
 *.pyc
