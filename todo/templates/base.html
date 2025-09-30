@@ -1,0 +1,33 @@
+{% load static%}
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Todo App{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css'%}" />
+</head>
+<body>
+    <header class="site-header">
+        <a class="brand" href="{% url 'home' %}">Todo</a>
+        <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">☰</button>
+        <nav class="site-nav" data-collapsible>
+          <a class="nav-link active" href="{% url 'home' %}">Home</a>
+          <a class="nav-link" href="{% url 'about' %}">About</a>
+          <a class="nav-link" href="{% url 'contact' %}">Contact</a>
+          <a class="nav-link" href="{% url 'login' %}">Login</a>
+          <a class="nav-link" href="{% url 'register' %}">Register</a>
+          <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+        </nav>
+      </header>
+
+    <main>
+        <div id="toast">Message</div>
+        {% block content %}{% endblock content%}
+    </main>
+
+<!--    <footer class="site-footer">-->
+<!--        <p>© <span id="year"></span> Section Footer</p>-->
+<!--    </footer>-->
+    <script src="{%static 'js/script.js'%}"></script>
+</body>
+</html>

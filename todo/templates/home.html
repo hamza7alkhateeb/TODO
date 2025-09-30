@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block title %}TODO APP{% endblock %}
+
+{% block content %}
+<div class="container">
+    <section class="section-header">
+        <h2>Task Manager</h2>
+    </section>
+    <section class="section-filter">
+        <a href="?filter=all" class="btn btn-filter {%if filter_type == 'all' %}active{%endif%}">All Tasks</a>
+        <a href="?filter=active" class="btn btn-filter {%if filter_type == 'active'%}active{%endif%}">Active</a>
+        <a href="?filter=complete" class="btn btn-filter {%if filter_type == 'complete'%}active{%endif%}">Completed</a>
+    </section>
+    
+    <section class="section-tasks">
+        <button class="btn btn-add" id="addOpenModal">
+             Add New Task
+        </button>
+        <div class="tasks">
+            {% for task in tasks %}
+            <div class="card">
+                <div class="card-content">
+                    <h3 class="card-content-title {% if task.complete %} checked {% endif %}">{{ task.title }}</h3>
+                    <p class="card-content-description">{{task.description}}</p>
+                    <p class="card-content-date">{{task.create_at}}</p>
+                    <a href="/tasks/1" class="card-btn-details">More Details</a>
+                </div>
+                <div class="card-actions">
+                    <div class="card-actions-edit-delete">
+                        <button class="btn btn-update"
+                                data-id="{{task.id}}"
+                                data-title="{{task.title}}"
+                                data-description="{{task.description}}"
+                                data-complete="{{task.complete}}">
+                            Update
+                        </button>
+                        <a href="{% url 'task_delete' task.id %}" class="btn btn-delete">Delete</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    <section class="modal" id="addTaskModal">
+        <div class="modal-content">
+            <span class="close" id="addCloseModal">&times;</span>
+            <h2>Add New Task</h2>
+            <form method="POST" id="addTaskForm" action="{% url 'task_create' %}">
+                {% csrf_token%}
+                <div class="form-group">
+                    <label for="add_title">Title:</label>
+                    <input id="add_title" type="text" name="title">
+                </div>
+                <div class="form-group">
+                    <label for="add_description">Description:</label>
+                    <input id="add_description" type="textarea" name="description">
+                </div>
+                <div class="form-group">
+                    <label class="complete-label" for="add_complete">
+                        <input id="add_complete" type="checkbox" name="complete">Complete
+                    </label>
+                </div>
+                <div class="form-actions">
+                    <button class="btn" type="submit">Save Task</button>
+                </div>
+            </form>
+        </div>
+    </section>
+    <section class="modal" id="updateTaskModal">
+        <div class="modal-content">
+            <span class="close" id="updateCloseModal">&times;</span>
+            <h2>Update Task</h2>
+            <form method="POST" id="updateTaskForm">
+                {% csrf_token%}
+                <input type="hidden" name="id" id="update_id">
+                <div class="form-group">
+                    <label for="update_title">Title:</label>
+                    <input id="update_title" type="text" name="title">
+                </div>
+                <div class="form-group">
+                    <label for="update_description">Description:</label>
+                    <input id="update_description" type="textarea" name="description">
+                </div>
+                <div class="form-group">
+                    <label class="complete-label" for="update_complete">
+                        <input id="update_complete" type="checkbox" name="complete">Complete
+                    </label>
+                </div>
+                <div class="form-actions">
+                    <button class="btn" type="submit">Update Task</button>
+                </div>
+            </form>
+        </div>
+    </section>
+</div>
+    
+{% endblock %}

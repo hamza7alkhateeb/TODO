@@ -1,0 +1,48 @@
+{% extends 'base.html'%}
+{% block title %}About{% endblock title %}
+{% load static %}
+
+{% block content %}
+  <div class="container about">
+  </div>
+  <div class="container about">
+    <section class="about-flex">
+      <div class="about-photo" role="img" aria-label="Profile photo placeholder">
+        <img src="{% static 'images/Hamza2.jpg' %}" alt="No img">
+      </div>
+      
+      <div class="about-text">
+        <h1>About Me</h1>
+        <p>I’m <strong>Hamza Alkhateeb</strong> from Amman, Jordan.</p>
+        <p>
+          Full-Stack Developer with hands-on experience in building scalable web applications using 
+          <strong style="color:red">React, Django, and Django REST Framework</strong>. 
+          I have professional experience at <strong>Softylus</strong>, where I developed features, optimized performance, 
+          and improved UI/UX for diverse client projects. 
+          I’m passionate about continuous learning, problem solving, and building applications that provide real value.
+        </p>
+        
+        <ul class="list">
+          <li>💡 Interests: Web Development</li>
+          <li>🛠️ Stack: React.js, Redux, Django, Python, PostgreSQL, HTML, CSS, JavaScript, Bootstrap</li>
+          <li>🎯 Goal: Grow as a Full-Stack Developer and ship impactful projects</li>
+          <li>📂 Projects:
+            <ul>
+              <li>Auto Car – <em>React, Django, PostgreSQL</em></li>
+              <li>Face Recognition Attendance System – <em>Python, OpenCV, Django</em></li>
+              <li>Sadeem Website – <em>React, Django REST Framework</em></li>
+              <li>Tasks App – <em>React, Redux, Django</em></li>
+              <li>Blogging Platform – <em>Django, HTML, CSS, JavaScript</em></li>
+              <li>Library Management System – <em>Python, Django, MySQL</em></li>
+            </ul>
+          </li>
+        </ul>
+        
+        <p>
+          💻 GitHub: <a href="https://github.com/hamza7alkhateeb" target="_blank">github.com/hamza7alkhateeb</a>
+        </p>
+      </div>
+      
+    </section>
+  </div>
+{% endblock content %}
