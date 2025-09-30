@@ -1,9 +1,30 @@
 {% extends "base.html" %}
 
-{% block title %}Task details {% endblock %}
+{% block title %}Task Details{% endblock %}
 
 {% block content %}
-    <h2>Task details</h2>
-    <p>{{ task }}</p>
-    <a href="/tasks/">رجوع للقائمة</a>
+<div class="task-details-container container">
+    <div class="task-card">
+        <h2 class="task-title">{{ task.title }}</h2>
+        <p class="task-description">{{ task.description }}</p>
+
+        <div class="task-info">
+            <p><span>ID:</span> {{ task.id }}</p>
+            <p>
+                <span>Status:</span>
+                {% if task.is_complete %}
+                    <span class="badge badge-complete">Completed</span>
+                {% else %}
+                    <span class="badge badge-pending">Pending</span>
+                {% endif %}
+            </p>
+            <p><span>Created At:</span> {{ task.created_at }}</p>
+        </div>
+
+        <div class="task-actions">
+            <a href="{% url 'home' %}" class="btn btn-back">⬅ Back To Home</a>
+        </div>
+    </div>
+</div>
 {% endblock %}
+

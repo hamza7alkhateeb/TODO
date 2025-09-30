@@ -1,108 +1,104 @@
-
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import login, logout,authenticate
-from django.contrib.auth.decorators import login_required
-from django.contrib import  messages
-from django.http import JsonResponse
-
-from .forms import TaskForm
-from .models import Task
-
-
-
-@login_required
-def home(request):
-  filter_type = request.GET.get('filter', 'all')
-  if filter_type == "active":
-    tasks = Task.objects.filter(complete=False)
-  elif filter_type == "complete":
-    tasks = Task.objects.filter(complete=True)
-  else:
-    tasks = Task.objects.all()
-  return render(request, 'home.html', {'tasks': tasks, 'filter_type': filter_type})
+from django.shortcuts import render, redirect
+from django.contrib.auth import logout
+from django.contrib.auth.views import LoginView, FormView
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login
+from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import ListView ,CreateView, UpdateView , DeleteView , DetailView, TemplateView
+from .models import Task , Contact
+from .forms import ContactForm
 
 
-def task_create(request):
-  if request.method == "POST":
-    form = TaskForm(request.POST)
-    if form.is_valid():
-      task =form.save(commit=False)
-      task.user=request.user
-      task.save()
-      return JsonResponse({
-        "status": "success",
-        "task": {
-          "id": task.id,
-          "title": task.title,
-          "description": task.description,
-          "complete": task.complete,
-        }
-      }, status=201)
-    else:
-      return JsonResponse({
-        "status": "error",
-        "errors": form.errors
-      }, status=400)
+class CustomLoginView(LoginView):
+    template_name= 'login.html'
+    fields = '__all__'
+    redirect_authenticated_user = True
+    def get_success_url(self):
+        return reverse_lazy('home')
 
-  return JsonResponse({"status": "invalid method"}, status=405)
+class CustomRegisterView(FormView):
+    template_name = 'register.html'
+    form_class = UserCreationForm
+    def get_success_url(self):
+        return reverse_lazy('home')
 
-def task_delete(request,id):
-  task_to_delete = Task.objects.filter(user=request.user,id=id)
-  if task_to_delete:
-    task_to_delete.delete()
-    return redirect('home')
-  return redirect('home')
-
-def task_update(request,id):
-  if request.method == "POST":
-    task = get_object_or_404(Task,id=id)
-    form = TaskForm(request.POST,instance=task)
-    if form.is_valid():
-      form.save()
-      return JsonResponse({"status": "success"}, status=200)
-    else:
-      return JsonResponse({"status": "error", "errors": form.errors}, status=400)
-
-  return JsonResponse({"status": "invalid method"}, status=405)
-
-
-
-
-
-
-
-
-
-
-
-
+    def form_valid(self,form):
+        user=form.save()
+        if user is not None:
+            login(self.request,user)
+        return super().form_valid(form)
+    def get(self, *args, **kwargs):
+        if self.request.user.is_authenticated:
+            return redirect('home')
+        return super().get(*args, **kwargs)
 def logout_view(request):
-  logout(request)
-  return redirect('login')
+    logout(request)
+    return redirect('login')
 
-def login_view(request):
-  if request.user.is_authenticated:
-    return redirect('home')
-  if request.method == 'POST':
-    username=request.POST.get('username')
-    password=request.POST.get('password')
-    validate_user=authenticate(username=username,password=password)
-    if validate_user:
-      login(request,validate_user)
-      return redirect('home')
-    else:
-      messages.error(request,'Error, wrong user details or user does not exist')
-      messages.error(request,'Error, wrong user details or user does not exist2')
-      return render(request,'login.html')
+class HomeView(LoginRequiredMixin,ListView):
+    template_name = 'home.html'
+    model = Task
+    context_object_name = 'tasks'
 
-  return render(request,'login.html',{})
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        new_tasks=context['tasks'].filter(user=self.request.user)
+
+        filter_type = self.request.GET.get('filter','all')
+        if filter_type == "active":
+            new_tasks=new_tasks.filter(is_complete=False)
+        elif filter_type == "completed":
+            new_tasks = new_tasks.filter(is_complete=True)
+        context['tasks']=new_tasks
+        context['filter_type']=filter_type
+
+        return context
+
+class TaskUpdateView(LoginRequiredMixin,UpdateView):
+    template_name = 'task_update.html'
+    model = Task
+    def get_success_url(self):
+        return reverse_lazy('home')
+    fields = ['title','description', 'is_complete']
+
+class TaskCreateView(LoginRequiredMixin, CreateView):
+    model = Task
+    template_name = 'task_create.html'
+    fields = ['title','description', 'is_complete']
+
+    def get_success_url(self):
+        return reverse_lazy('home')
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+class TaskDeleteView(LoginRequiredMixin,DeleteView):
+    model = Task
+    template_name = 'confirm_delete.html'
+
+    def get_success_url(self):
+        return reverse_lazy('home')
 
 
+class TaskDetailView(LoginRequiredMixin,DetailView):
+    model = Task
+    template_name = 'task_detail.html'
+    context_object_name = 'task'
 
 
-def register_view(request):
-  return render(request,'register.html',{})
-def contact_view(request):
-  return render(request,'contact.html',{})
-def about_view(request):
-  return render(request,'about.html',{})
+class AboutTemplateView(LoginRequiredMixin, TemplateView):
+    template_name = 'about.html'
+
+
+class ContactTemplateView(LoginRequiredMixin, TemplateView):
+    template_name = 'contact.html'
+
+class ContactCreateView(LoginRequiredMixin,CreateView):
+    model = Contact
+    template_name = 'contact.html'
+    form_class = ContactForm
+
+    def get_success_url(self):
+        return reverse_lazy('home')

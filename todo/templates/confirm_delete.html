@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Task Update {% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Task Update</h2>
+    <form method="POST">
+        {% csrf_token %}
+        <p>Are your sure you want to delete this task? <b style="color: red">"{{task}}"</b> </p>
+        <input type="submit" value="Delete" >
+    </form>
+</div>
+{% endblock %}
